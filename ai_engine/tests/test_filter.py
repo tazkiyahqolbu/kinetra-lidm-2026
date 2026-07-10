@@ -1,27 +1,21 @@
 from ai_engine.filters import EMAFilter
 
-ema = EMAFilter(alpha=0.2)
 
-angles = [
-    180,
-    175,
-    170,
-    160,
-    150,
-    140,
-    130
-]
+def test_first_value_passes_through_unchanged():
 
-for angle in angles:
+    ema = EMAFilter(alpha=0.2)
 
-    smooth = ema.update(angle)
+    assert ema.update(180) == 180
 
-    print(
-        f"Input : {angle}"
-    )
 
-    print(
-        f"Output: {smooth}"
-    )
+def test_smoothing_matches_ema_formula():
 
-    print("----------------")
+    ema = EMAFilter(alpha=0.2)
+
+    angles = [180, 175, 170, 160, 150, 140, 130]
+
+    expected = [180, 179.0, 177.2, 173.76, 169.01, 163.21, 156.57]
+
+    output = [ema.update(angle) for angle in angles]
+
+    assert output == expected
