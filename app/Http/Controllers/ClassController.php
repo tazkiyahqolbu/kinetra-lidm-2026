@@ -10,8 +10,8 @@ class ClassController extends Controller
 {
     public function index()
     {
-        $classes = ClassRoom::with('teacher')->get();
-        return response()->json($classes); // Sementara return JSON agar frontend langsung bisa konsumsi data dummy
+        $classes = ClassRoom::with('teacher')->where('teacher_id', Auth::id())->get();
+        return response()->json($classes);
     }
 
     public function store(Request $request)
@@ -25,7 +25,7 @@ class ClassController extends Controller
             'class_name' => $validated['class_name'],
         ]);
 
-        return response()->json(['message' => 'Kelas berhasil ditambahkan!']);
+        return back()->with('success', 'Kelas berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
@@ -34,17 +34,17 @@ class ClassController extends Controller
             'class_name' => 'required|string|max:255',
         ]);
 
-        $class = ClassRoom::findOrFail($id);
+        $class = ClassRoom::where('teacher_id', Auth::id())->findOrFail($id);
         $class->update(['class_name' => $validated['class_name']]);
 
-        return response()->json(['message' => 'Kelas berhasil diperbarui!']);
+        return back()->with('success', 'Kelas berhasil diperbarui!');
     }
 
     public function destroy($id)
     {
-        $class = ClassRoom::findOrFail($id);
+        $class = ClassRoom::where('teacher_id', Auth::id())->findOrFail($id);
         $class->delete();
 
-        return response()->json(['message' => 'Kelas berhasil dihapus!']);
+        return back()->with('success', 'Kelas berhasil dihapus!');
     }
 }
