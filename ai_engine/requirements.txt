@@ -1,9 +1,17 @@
+# If you have an NVIDIA GPU, install the CUDA build of torch/torchvision
+# FIRST (before ultralytics pulls in the CPU-only build automatically):
+#   pip install --index-url https://download.pytorch.org/whl/cu124 torch torchvision
+# Then install the rest of this file. Without this, ultralytics falls back
+# to CPU inference (~3x slower for pose estimation).
 opencv-python>=4.13.0
 ultralytics>=8.4.75
 numpy>=2.5.0
 pandas>=3.0.3
 scipy>=1.18.0
 matplotlib>=3.11.0
+fastapi>=0.139.0
+uvicorn[standard]>=0.50.0
 
 # dev / testing
 pytest>=8.0.0
+websockets>=16.1

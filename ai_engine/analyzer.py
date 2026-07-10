@@ -6,23 +6,16 @@ SQUAT ANALYZER
 """
 
 import cv2
-import time
-import numpy as np
 
 from ai_engine.pose_detector import PoseDetector
 from ai_engine.angle import AngleCalculator
-from ai_engine.filters import EMAFilter
-from ai_engine.state_machine import SquatStateMachine
-from ai_engine.movement_score import MovementScore
-from ai_engine.feedback import FeedbackEngine
-from ai_engine.risk_detection import RiskDetection
+from ai_engine.session import SquatSession
 from ai_engine.report import ReportGenerator
 from ai_engine.config import (
     CAMERA_INDEX,
     FRAME_WIDTH,
     FRAME_HEIGHT,
-    WINDOW_NAME,
-    EMA_ALPHA
+    WINDOW_NAME
 )
 
 
@@ -36,15 +29,7 @@ class SquatAnalyzer:
 
         self.detector = PoseDetector()
 
-        self.filter = EMAFilter(alpha=EMA_ALPHA)
-
-        self.state_machine = SquatStateMachine()
-
-        self.score_engine = MovementScore()
-
-        self.feedback_engine = FeedbackEngine()
-
-        self.risk_engine = RiskDetection()
+        self.session = SquatSession()
 
         self.report_engine = ReportGenerator()
 
@@ -52,19 +37,7 @@ class SquatAnalyzer:
         # HISTORY
         # ============================
 
-        self.angle_history = []
-
         self.frame_history = []
-
-        # ============================
-        # REP TRACKER
-        # ============================
-
-        self.rep_start_time = None
-
-        self.rep_min_angle = 180
-
-        self.rep_angles = []
 
         self.last_result = None
 
@@ -108,153 +81,17 @@ class SquatAnalyzer:
                     ankle
                 )
 
-                angle = self.filter.update(
-                    raw_angle
-                )
+                frame_result = self.session.process_angle(raw_angle)
 
-                state = self.state_machine.update(
-                    angle
-                )
-
-                self.angle_history.append(
-                    angle
-                )
+                angle = frame_result["angle"]
 
                 self.frame_history.append(
                     frame.copy()
                 )
 
-                # ====================================
-                # REP TRACKING
-                # ====================================
+                if frame_result["event"] == "REP_COMPLETED":
 
-                if state["state"] == "Descending":
-
-                    if self.rep_start_time is None:
-
-                        self.rep_start_time = time.time()
-
-                        self.rep_min_angle = angle
-
-                        self.rep_angles = []
-
-                if self.rep_start_time is not None:
-
-                    self.rep_angles.append(
-                        angle
-                    )
-
-                    if angle < self.rep_min_angle:
-
-                        self.rep_min_angle = angle
-
-                # ====================================
-                # REP COMPLETED
-                # ====================================
-
-                if state["event"] == "REP_COMPLETED":
-
-                    duration = (
-                        time.time()
-                        -
-                        self.rep_start_time
-                    )
-
-                    variation = (
-                        max(self.rep_angles)
-                        -
-                        min(self.rep_angles)
-                    )
-
-                    # ====================================
-                    # MOVEMENT SCORE
-                    # ====================================
-
-                    self.score_engine.calculate_depth_score(
-                        self.rep_min_angle
-                    )
-
-                    self.score_engine.calculate_tempo_score(
-                        duration
-                    )
-
-                    self.score_engine.calculate_stability_score(
-                        variation
-                    )
-
-                    movement_score = {
-
-                        "depth":
-                            self.score_engine.depth_score,
-
-                        "tempo":
-                            self.score_engine.tempo_score,
-
-                        "stability":
-                            self.score_engine.stability_score,
-
-                        "final":
-                            self.score_engine.calculate_final_score()
-
-                    }
-
-                    # ====================================
-                    # FEEDBACK
-                    # ====================================
-
-                    self.feedback_engine.feedbacks = []
-
-                    self.feedback_engine.evaluate_depth(
-                        self.rep_min_angle
-                    )
-
-                    self.feedback_engine.evaluate_tempo(
-                        duration
-                    )
-
-                    feedback = self.feedback_engine.get_feedback()
-
-                    # ====================================
-                    # RISK
-                    # ====================================
-
-                    risk = self.risk_engine.evaluate(
-
-                        movement_score["depth"],
-
-                        movement_score["tempo"],
-
-                        movement_score["stability"]
-
-                    )
-
-                    # ====================================
-                    # SAVE RESULT
-                    # ====================================
-
-                    self.last_result = {
-
-                        "repetition":
-                            state["repetition"],
-
-                        "movement_score":
-                            movement_score,
-
-                        "feedback":
-                            feedback,
-
-                        "risk":
-                            risk
-
-                    }
-
-                    # RESET REP
-
-                    self.rep_start_time = None
-
-                    self.rep_min_angle = 180
-
-                    self.rep_angles = []
+                    self.last_result = frame_result["result"]
 
                 # ====================================
                 # DISPLAY
@@ -282,7 +119,7 @@ class SquatAnalyzer:
 
                     output,
 
-                    f"State : {state['state']}",
+                    f"State : {frame_result['state']}",
 
                     (20, 80),
 
@@ -300,7 +137,7 @@ class SquatAnalyzer:
 
                     output,
 
-                    f"Rep : {state['repetition']}",
+                    f"Rep : {frame_result['repetition']}",
 
                     (20, 120),
 
@@ -378,7 +215,7 @@ class SquatAnalyzer:
 
         report = self.report_engine.generate(
 
-            self.angle_history
+            self.session.angle_history
 
         )
 
