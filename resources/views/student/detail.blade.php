@@ -1,45 +1,26 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Detail Laporan Latihan - KINETRA')
+@section('title', 'Detail Latihan - KINETRA')
 
 @section('content')
 <!-- Header -->
 <div class="mb-8 flex justify-between items-center">
     <div>
-        <h1 class="text-3xl font-bold text-gray-900">Detail Laporan Latihan</h1>
-        <p class="text-gray-600 mt-2">Analisis detail gerakan siswa</p>
+        <h1 class="text-3xl font-bold text-gray-900">Detail Latihan</h1>
+        <p class="text-gray-600 mt-2">{{ \Carbon\Carbon::parse($history->date)->format('d M Y') }} - Squat</p>
     </div>
-    <a href="/teacher/results" class="text-blue-600 hover:text-blue-700 font-semibold">← Kembali</a>
+    <a href="/student/history" class="text-blue-600 hover:text-blue-700 font-semibold">← Kembali</a>
 </div>
 
 <!-- Main Content -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Left Column - Snapshot, Chart & Details -->
+    <!-- Left Column - Snapshot, Chart & Feedback -->
     <div class="lg:col-span-2 space-y-6">
         <!-- Snapshots -->
         @include('components.snapshot-panel', ['history' => $history])
 
         <!-- Chart -->
-        @include('components.angle-chart', ['angles' => $history->angles, 'id' => 'chart-teacher-' . $history->id])
-
-        <!-- Info Card -->
-        <div class="bg-white rounded-xl shadow-lg p-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Informasi Siswa</h2>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
-                    <p class="text-gray-600 text-sm font-semibold">Nama</p>
-                    <p class="font-bold text-gray-900">{{ $history->student->user->name ?? '-' }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm font-semibold">Kelas</p>
-                    <p class="font-bold text-gray-900">{{ $history->student->classRoom->class_name ?? '-' }}</p>
-                </div>
-                <div>
-                    <p class="text-gray-600 text-sm font-semibold">Tanggal</p>
-                    <p class="font-bold text-gray-900">{{ \Carbon\Carbon::parse($history->date)->format('d M Y') }}</p>
-                </div>
-            </div>
-        </div>
+        @include('components.angle-chart', ['angles' => $history->angles, 'id' => 'chart-student-' . $history->id])
 
         <!-- Feedback -->
         <div class="bg-white rounded-xl shadow-lg p-8">
