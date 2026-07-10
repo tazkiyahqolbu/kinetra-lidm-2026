@@ -1,0 +1,9 @@
+opencv-python>=4.13.0
+ultralytics>=8.4.75
+numpy>=2.5.0
+pandas>=3.0.3
+scipy>=1.18.0
+matplotlib>=3.11.0
+
+# dev / testing
+pytest>=8.0.0
