@@ -16,10 +16,10 @@
             <div>
                 <h3 class="font-semibold mb-4">Navigasi</h3>
                 <ul class="space-y-2 text-gray-400">
-                    <li><a href="#" class="hover:text-blue-400 transition">Home</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Tentang</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Fitur</a></li>
-                    <li><a href="#" class="hover:text-blue-400 transition">Cara Kerja</a></li>
+                    <li><a href="/#home" class="hover:text-blue-400 transition">Home</a></li>
+                    <li><a href="/#about" class="hover:text-blue-400 transition">Tentang</a></li>
+                    <li><a href="/#features" class="hover:text-blue-400 transition">Fitur</a></li>
+                    <li><a href="/#how-it-works" class="hover:text-blue-400 transition">Cara Kerja</a></li>
                 </ul>
             </div>
 
