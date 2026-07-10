@@ -1,11 +1,11 @@
-@extends('layouts.dashboard', ['role' => 'Siswa'])
+@extends('layouts.dashboard')
 
-@section('title', 'Riwayat Latihan - KINETRA')
+@section('title', 'Jejak Latihan - KINETRA')
 
 @section('content')
 <!-- Header -->
 <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">Riwayat Latihan</h1>
+    <h1 class="text-3xl font-bold text-gray-900">Jejak Latihan</h1>
     <p class="text-gray-600 mt-2">Lihat semua riwayat analisis gerak Anda</p>
 </div>
 
@@ -19,45 +19,41 @@
                 <th class="text-left py-4 px-6 font-semibold">Repetition</th>
                 <th class="text-left py-4 px-6 font-semibold">ROM</th>
                 <th class="text-left py-4 px-6 font-semibold">Nilai</th>
+                <th class="text-left py-4 px-6 font-semibold">Aksi</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-            @for($i = 1; $i <= 12; $i++)
+            @forelse($histories as $item)
             <tr class="hover:bg-gray-50 transition">
-                <td class="py-4 px-6 text-sm text-gray-600">{{ date('d M Y', strtotime("-$i days")) }}</td>
-                <td class="py-4 px-6 font-medium">
-                    @switch($i % 5)
-                        @case(0) Squat @break
-                        @case(1) Push-up @break
-                        @case(2) Lunge @break
-                        @case(3) Plank @break
-                        @default Sit-up
-                    @endswitch
-                </td>
-                <td class="py-4 px-6 text-center font-semibold">{{ 15 + ($i % 10) }}</td>
-                <td class="py-4 px-6 text-center font-semibold">{{ 85 + rand(0, 20) }}°</td>
+                <td class="py-4 px-6 text-sm text-gray-600">{{ \Carbon\Carbon::parse($item->date)->format('d M Y') }}</td>
+                <td class="py-4 px-6 font-medium">Squat</td>
+                <td class="py-4 px-6 text-center font-semibold">{{ $item->repetition }}</td>
+                <td class="py-4 px-6 text-center font-semibold">{{ $item->rom }}°</td>
                 <td class="py-4 px-6">
-                    @php $score = 75 + rand(0, 25); @endphp
                     <span class="
-                        @if($score >= 85) bg-emerald-100 text-emerald-800
-                        @elseif($score >= 75) bg-yellow-100 text-yellow-800
+                        @if($item->score >= 85) bg-emerald-100 text-emerald-800
+                        @elseif($item->score >= 75) bg-yellow-100 text-yellow-800
                         @else bg-red-100 text-red-800 @endif
                         px-3 py-1 rounded-full text-sm font-semibold">
-                        {{ $score }}
+                        {{ $item->score }}
                     </span>
                 </td>
+                <td class="py-4 px-6">
+                    <a href="/student/history/{{ $item->id }}" class="text-blue-600 hover:text-blue-700 font-semibold text-sm">Lihat Detail</a>
+                </td>
             </tr>
-            @endfor
+            @empty
+            <tr>
+                <td colspan="6" class="py-6 px-6 text-center text-gray-500">Belum ada riwayat latihan.</td>
+            </tr>
+            @endforelse
         </tbody>
     </table>
 </div>
 
 <!-- Pagination -->
-<div class="mt-6 flex justify-center gap-2">
-    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">← Sebelumnya</button>
-    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg">1</button>
-    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">2</button>
-    <button class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">Selanjutnya →</button>
+<div class="mt-6">
+    {{ $histories->links() }}
 </div>
 
 @endsection
