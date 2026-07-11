@@ -34,6 +34,10 @@ class ClassRoom extends Model
         return $code;
     }
 
+    public function scopeOwnedBy($query, $teacherId) {
+        return $query->where('teacher_id', $teacherId);
+    }
+
     public function teacher() {
         return $this->belongsTo(User::class, 'teacher_id');
     }

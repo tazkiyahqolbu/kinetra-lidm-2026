@@ -1,40 +1,10 @@
-"""
-=====================================
-KINETRA AI ENGINE CONFIGURATION
-=====================================
-"""
-
-# ==============================
-# YOLO MODEL
-# ==============================
-
+# Model YOLO
 MODEL_PATH = "models/yolov8n-pose.pt"
 
-# ==============================
-# CAMERA
-# ==============================
-
-CAMERA_INDEX = 0
-
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
-
-# ==============================
-# DISPLAY
-# ==============================
-
-WINDOW_NAME = "KINETRA AI Engine"
-
-# ==============================
-# EMA FILTER
-# ==============================
-
+# Smoothing sudut (EMA filter)
 EMA_ALPHA = 0.2
 
-# ==============================
-# ANGLE THRESHOLD
-# ==============================
-
+# Threshold sudut tiap fase squat
 STANDING_ANGLE = 165
 DESCENDING_ANGLE = 150
 BOTTOM_ANGLE = 120

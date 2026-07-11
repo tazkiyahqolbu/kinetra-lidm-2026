@@ -53,6 +53,7 @@
                 <th class="text-left py-4 px-6 font-semibold">Email</th>
                 <th class="text-left py-4 px-6 font-semibold">NIS</th>
                 <th class="text-left py-4 px-6 font-semibold">Kelas</th>
+                <th class="text-left py-4 px-6 font-semibold">Password Sementara</th>
                 <th class="text-left py-4 px-6 font-semibold">Aksi</th>
             </tr>
         </thead>
@@ -63,6 +64,13 @@
                 <td class="py-4 px-6 text-sm text-gray-600">{{ $student->user->email ?? '-' }}</td>
                 <td class="py-4 px-6 text-sm text-gray-600">{{ $student->nis }}</td>
                 <td class="py-4 px-6">{{ $student->classRoom->class_name ?? '-' }}</td>
+                <td class="py-4 px-6 text-sm">
+                    @if($student->temporary_password)
+                        <span class="font-mono bg-yellow-50 text-yellow-800 px-2 py-1 rounded">{{ $student->temporary_password }}</span>
+                    @else
+                        <span class="text-gray-400">Sudah diganti siswa</span>
+                    @endif
+                </td>
                 <td class="py-4 px-6 flex space-x-3">
                     <button type="button" onclick="document.getElementById('modal-edit-student-{{ $student->id }}').classList.remove('hidden')" class="text-blue-600 hover:text-blue-700 font-semibold text-sm">Edit</button>
                     <form method="POST" action="/students/{{ $student->id }}" onsubmit="return confirm('Hapus siswa {{ $student->user->name ?? '' }}? Akun login siswa ini juga akan terhapus.')" class="inline">
@@ -74,7 +82,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="5" class="py-6 px-6 text-center text-gray-500">Belum ada siswa yang cocok.</td>
+                <td colspan="6" class="py-6 px-6 text-center text-gray-500">Belum ada siswa yang cocok.</td>
             </tr>
             @endforelse
         </tbody>
@@ -108,7 +116,7 @@
                 @endforeach
             </select>
 
-            <p class="text-xs text-gray-500 mb-4">Password default siswa: <strong>password123</strong> (bisa diganti siswa setelah login).</p>
+            <p class="text-xs text-gray-500 mb-4">Password sementara acak akan dibuatkan otomatis dan tampil di kolom "Password Sementara" pada tabel siswa.</p>
 
             <div class="flex gap-3">
                 <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold">Simpan</button>

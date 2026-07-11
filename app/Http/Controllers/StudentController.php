@@ -4,18 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Student;
-use App\Models\ClassRoom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
     public function index()
     {
-        $classIds = ClassRoom::where('teacher_id', Auth::id())->pluck('id');
-        $students = Student::with(['user', 'classRoom'])->whereIn('class_id', $classIds)->get();
+        $students = Student::with(['user', 'classRoom'])->inClassesOwnedBy(Auth::id())->get();
         return response()->json($students);
     }
 
@@ -32,10 +30,12 @@ class StudentController extends Controller
         ]);
 
         // 1. Buat User Account untuk Siswa
+        $temporaryPassword = Str::random(10);
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make('password123'), // Default password siswa
+            'password' => $temporaryPassword,
             'role' => 'student',
         ]);
 
@@ -44,15 +44,15 @@ class StudentController extends Controller
             'user_id' => $user->id,
             'class_id' => $validated['class_id'],
             'nis' => $validated['nis'],
+            'temporary_password' => $temporaryPassword,
         ]);
 
-        return back()->with('success', 'Siswa berhasil ditambahkan! Password default: password123');
+        return back()->with('success', 'Siswa berhasil ditambahkan!');
     }
 
     public function update(Request $request, $id)
     {
-        $classIds = ClassRoom::where('teacher_id', Auth::id())->pluck('id');
-        $student = Student::whereIn('class_id', $classIds)->findOrFail($id);
+        $student = Student::inClassesOwnedBy(Auth::id())->findOrFail($id);
         $user = $student->user;
 
         $validated = $request->validate([
@@ -73,8 +73,7 @@ class StudentController extends Controller
 
     public function destroy($id)
     {
-        $classIds = ClassRoom::where('teacher_id', Auth::id())->pluck('id');
-        $student = Student::whereIn('class_id', $classIds)->findOrFail($id);
+        $student = Student::inClassesOwnedBy(Auth::id())->findOrFail($id);
 
         // Hapus user terkait, tabel students otomatis terhapus karena 'onDelete cascade'
         User::destroy($student->user_id);

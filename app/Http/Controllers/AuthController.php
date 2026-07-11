@@ -47,7 +47,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'password' => $validated['password'],
             'role' => $validated['role'] === 'guru' ? 'teacher' : 'student',
         ]);
 
@@ -71,5 +71,29 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (! Hash::check($validated['current_password'], $user->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini salah.']);
+        }
+
+        $user->update(['password' => $validated['password']]);
+
+        // Password sementara (kalau ada) sudah nggak berlaku lagi begitu
+        // siswa mengganti password sendiri, jadi hilangkan dari daftar guru.
+        if ($user->studentProfile) {
+            $user->studentProfile->update(['temporary_password' => null]);
+        }
+
+        return back()->with('success', 'Password berhasil diubah.');
     }
 }

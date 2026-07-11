@@ -13,7 +13,7 @@ class EMAFilter:
 
         if self.previous is None:
             self.previous = value
-            return value
+            return round(value, 2)
 
         smoothed = (
             self.alpha * value

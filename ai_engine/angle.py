@@ -80,3 +80,4 @@ class AngleCalculator:
         # payloads) is always a native float, regardless of what dtype
         # the caller's keypoints happened to be in.
         return float(result)
+

@@ -17,17 +17,5 @@
 
     <!-- Footer -->
     @include('components.footer')
-
-    <script>
-        // Simple responsive sidebar toggle
-        document.addEventListener('DOMContentLoaded', function() {
-            const mobileMenuBtn = document.querySelector('[onclick*="classList.toggle"]');
-            if (mobileMenuBtn) {
-                mobileMenuBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                });
-            }
-        });
-    </script>
 </body>
 </html>
