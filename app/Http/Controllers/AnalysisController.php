@@ -10,12 +10,6 @@ use Illuminate\Support\Str;
 
 class AnalysisController extends Controller
 {
-    public function index()
-    {
-        $histories = AnalysisHistory::with('student.user')->get();
-        return response()->json($histories);
-    }
-
     public function storeSummary(Request $request)
     {
         $validated = $request->validate([

@@ -40,6 +40,7 @@
                             ['label' => 'Progress Saya', 'url' => '/student/dashboard'],
                             ['label' => 'Mulai Analisis', 'url' => '/student/analysis'],
                             ['label' => 'Jejak Latihan', 'url' => '/student/history'],
+                            ['label' => 'Teman Sekelas', 'url' => '/student/classmates'],
                         ];
                 @endphp
 

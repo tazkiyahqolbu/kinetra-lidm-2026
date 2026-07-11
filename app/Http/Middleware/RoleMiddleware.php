@@ -13,7 +13,11 @@ class RoleMiddleware
     {
         // Pastikan user sudah login dan memiliki role yang sesuai
         if (!Auth::check() || Auth::user()->role !== $role) {
-            return response()->json(['message' => 'Unauthorized. Anda tidak memiliki akses ke halaman ini.'], 403);
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthorized. Anda tidak memiliki akses ke halaman ini.'], 403);
+            }
+
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
         return $next($request);

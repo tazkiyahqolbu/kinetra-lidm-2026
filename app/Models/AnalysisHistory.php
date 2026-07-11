@@ -16,6 +16,10 @@ class AnalysisHistory extends Model
         'angles' => 'array',
     ];
 
+    public function scopeForTeacher($query, $teacherId) {
+        return $query->whereHas('student.classRoom', fn ($q) => $q->where('teacher_id', $teacherId));
+    }
+
     public function student() {
         return $this->belongsTo(Student::class, 'student_id');
     }

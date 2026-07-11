@@ -72,6 +72,49 @@
             @endif
         </div>
     </div>
+
+    <!-- Ganti Password -->
+    <div class="bg-white rounded-xl shadow-lg p-12 mt-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Ganti Password</h2>
+
+        @if (session('success'))
+            <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm rounded-lg p-3 mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg p-3 mb-4">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('profile.password') }}" class="space-y-4">
+            @csrf
+
+            <div>
+                <label for="current_password" class="block text-sm font-semibold text-gray-700 mb-2">Password Saat Ini</label>
+                <input type="password" id="current_password" name="current_password"
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-600 transition">
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Password Baru</label>
+                <input type="password" id="password" name="password"
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-600 transition">
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">Konfirmasi Password Baru</label>
+                <input type="password" id="password_confirmation" name="password_confirmation"
+                       class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-600 transition">
+            </div>
+
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition">
+                Simpan Password Baru
+            </button>
+        </form>
+    </div>
 </div>
 
 @endsection

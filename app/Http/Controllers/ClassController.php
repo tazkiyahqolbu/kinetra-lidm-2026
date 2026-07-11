@@ -10,7 +10,7 @@ class ClassController extends Controller
 {
     public function index()
     {
-        $classes = ClassRoom::with('teacher')->where('teacher_id', Auth::id())->get();
+        $classes = ClassRoom::with('teacher')->ownedBy(Auth::id())->get();
         return response()->json($classes);
     }
 
@@ -34,7 +34,7 @@ class ClassController extends Controller
             'class_name' => 'required|string|max:255',
         ]);
 
-        $class = ClassRoom::where('teacher_id', Auth::id())->findOrFail($id);
+        $class = ClassRoom::ownedBy(Auth::id())->findOrFail($id);
         $class->update(['class_name' => $validated['class_name']]);
 
         return back()->with('success', 'Kelas berhasil diperbarui!');
@@ -42,7 +42,7 @@ class ClassController extends Controller
 
     public function destroy($id)
     {
-        $class = ClassRoom::where('teacher_id', Auth::id())->findOrFail($id);
+        $class = ClassRoom::ownedBy(Auth::id())->findOrFail($id);
         $class->delete();
 
         return back()->with('success', 'Kelas berhasil dihapus!');

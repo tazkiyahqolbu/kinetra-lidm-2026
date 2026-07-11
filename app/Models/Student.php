@@ -6,7 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $fillable = ['user_id', 'class_id', 'nis'];
+    protected $fillable = ['user_id', 'class_id', 'nis', 'temporary_password'];
+
+    // Dikecualikan dari serialisasi array/JSON (mis. StudentController::index)
+    // supaya nggak ikut ke response API; tetap bisa diakses langsung di Blade.
+    protected $hidden = ['temporary_password'];
+
+    public function scopeInClassesOwnedBy($query, $teacherId) {
+        return $query->whereHas('classRoom', fn ($q) => $q->where('teacher_id', $teacherId));
+    }
 
     public function user() {
         return $this->belongsTo(User::class, 'user_id');

@@ -7,7 +7,6 @@ use App\Models\ClassRoom;
 use App\Models\Student;
 use App\Models\AnalysisHistory;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
@@ -18,7 +17,7 @@ class DatabaseSeeder extends Seeder
         $teacherUser = User::create([
             'name' => 'Guru PJOK',
             'email' => 'guru@kinetra.com',
-            'password' => Hash::make('password123'),
+            'password' => 'password123',
             'role' => 'teacher',
         ]);
 
@@ -46,7 +45,7 @@ class DatabaseSeeder extends Seeder
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => Hash::make('password123'),
+                'password' => 'password123',
                 'role' => 'student',
             ]);
 
@@ -64,8 +63,17 @@ class DatabaseSeeder extends Seeder
                 'repetition' => 12,
                 'rom' => 135.5,
                 'score' => 85,
-                'feedback' => 'Gerakan squat sudah konsisten, pertahankan sudut lutut.',
-                'video_path' => 'videos/squat_sample_' . $data['name'] . '.mp4',
+                // Format JSON harus sama dengan alur produksi (lihat
+                // AnalysisController::storeSummary) supaya json_decode di
+                // halaman detail tidak gagal dan fallback ke array kosong.
+                'feedback' => json_encode([
+                    [
+                        'code' => 'DEPTH_GOOD',
+                        'level' => 'success',
+                        'message' => 'Gerakan squat sudah konsisten, pertahankan sudut lutut.',
+                    ],
+                ]),
+                'video_path' => null,
             ]);
         }
     }

@@ -6,9 +6,6 @@
 opencv-python>=4.13.0
 ultralytics>=8.4.75
 numpy>=2.5.0
-pandas>=3.0.3
-scipy>=1.18.0
-matplotlib>=3.11.0
 fastapi>=0.139.0
 uvicorn[standard]>=0.50.0
 

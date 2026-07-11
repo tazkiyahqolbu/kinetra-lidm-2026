@@ -1,27 +1,28 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Detail Laporan Latihan - KINETRA')
+@section('title', $pageTitle . ' - KINETRA')
 
 @section('content')
 <!-- Header -->
 <div class="mb-8 flex justify-between items-center">
     <div>
-        <h1 class="text-3xl font-bold text-gray-900">Detail Laporan Latihan</h1>
-        <p class="text-gray-600 mt-2">Analisis detail gerakan siswa</p>
+        <h1 class="text-3xl font-bold text-gray-900">{{ $pageTitle }}</h1>
+        <p class="text-gray-600 mt-2">{{ $subtitle }}</p>
     </div>
-    <a href="/teacher/results" class="text-blue-600 hover:text-blue-700 font-semibold">← Kembali</a>
+    <a href="{{ $backUrl }}" class="text-blue-600 hover:text-blue-700 font-semibold">← Kembali</a>
 </div>
 
 <!-- Main Content -->
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Left Column - Snapshot, Chart & Details -->
+    <!-- Left Column - Snapshot, Chart & Feedback -->
     <div class="lg:col-span-2 space-y-6">
         <!-- Snapshots -->
         @include('components.snapshot-panel', ['history' => $history])
 
         <!-- Chart -->
-        @include('components.angle-chart', ['angles' => $history->angles, 'id' => 'chart-teacher-' . $history->id])
+        @include('components.angle-chart', ['angles' => $history->angles, 'id' => $chartId])
 
+        @if($showStudentInfo ?? false)
         <!-- Info Card -->
         <div class="bg-white rounded-xl shadow-lg p-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Informasi Siswa</h2>
@@ -40,6 +41,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- Feedback -->
         <div class="bg-white rounded-xl shadow-lg p-8">

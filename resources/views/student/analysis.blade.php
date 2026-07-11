@@ -27,12 +27,11 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-3">Pilih Jenis Gerakan</label>
                     <select class="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-blue-600">
-                        <option>-- Pilih Gerakan --</option>
                         <option selected>Squat</option>
-                        <option>Push-up</option>
-                        <option>Lunge</option>
-                        <option>Plank</option>
-                        <option>Sit-up</option>
+                        <option disabled>Push-up (segera hadir)</option>
+                        <option disabled>Lunge (segera hadir)</option>
+                        <option disabled>Plank (segera hadir)</option>
+                        <option disabled>Sit-up (segera hadir)</option>
                     </select>
                     <p class="text-xs text-gray-500 mt-2">Saat ini hanya analisis Squat yang tersedia.</p>
                 </div>
